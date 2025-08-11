@@ -4,74 +4,151 @@ const fileInput = document.getElementById("fileInput");
 const dropZone = document.getElementById("dropZone");
 const speedDisplay = document.getElementById("speedDisplay");
 const browseText = document.getElementById("browseText");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const playerContainer = document.getElementById("playerContainer");
 
-// Open file dialog on click of "browse" text
+// guard to avoid recursive fullscreen switching
+let isSwitchingFullscreen = false;
+
+/* ----------------- File + Drag & Drop ----------------- */
 browseText.addEventListener("click", () => fileInput.click());
 
-// Handle file selection from input
 fileInput.addEventListener("change", function () {
-    if (this.files.length > 0) {
-        loadVideoFile(this.files[0]);
-    }
+  if (this.files.length > 0) loadVideoFile(this.files[0]);
 });
 
-// Drag over
 dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.classList.add("dragover");
+  e.preventDefault();
+  dropZone.classList.add("dragover");
 });
-
-// Drag leave
-dropZone.addEventListener("dragleave", () => {
-    dropZone.classList.remove("dragover");
-});
-
-// Drop
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
 dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("dragover");
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("video/")) {
-        loadVideoFile(file);
-    } else {
-        alert("Please drop a valid video file.");
-    }
+  e.preventDefault();
+  dropZone.classList.remove("dragover");
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith("video/")) loadVideoFile(file);
+  else alert("Please drop a valid video file.");
 });
 
-// Load and play video
 function loadVideoFile(file) {
-    const videoURL = URL.createObjectURL(file);
-    videoSource.src = videoURL;
-    video.load();
-    video.play();
+  const videoURL = URL.createObjectURL(file);
+  videoSource.src = videoURL;
+  video.load();
+  video.play();
 }
 
-// Controls
-function forward10() {
-    video.currentTime += 10;
-}
-
+/* ----------------- Basic Controls ----------------- */
+function forward10() { video.currentTime += 10; }
 function rewind10() {
-    video.currentTime -= 10;
-    if (video.currentTime < 0) video.currentTime = 0;
+  video.currentTime -= 10;
+  if (video.currentTime < 0) video.currentTime = 0;
 }
-
 function increaseSpeed() {
-    video.playbackRate = parseFloat((video.playbackRate + 0.05).toFixed(2));
+  video.playbackRate = parseFloat((video.playbackRate + 0.05).toFixed(2));
 }
-
 function decreaseSpeed() {
-    video.playbackRate = parseFloat((video.playbackRate - 0.05).toFixed(2));
-    if (video.playbackRate < 0.1) video.playbackRate = 0.1;
+  video.playbackRate = parseFloat((video.playbackRate - 0.05).toFixed(2));
+  if (video.playbackRate < 0.1) video.playbackRate = 0.1;
 }
-
-// Show current speed
 function updateSpeedDisplay() {
-    speedDisplay.textContent = video.playbackRate.toFixed(2) + "x";
+  speedDisplay.value = video.playbackRate.toFixed(2) + "x";
+}
+video.addEventListener("ratechange", updateSpeedDisplay);
+speedDisplay.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    let inputVal = speedDisplay.value.toLowerCase().replace("x", "").trim();
+    let newSpeed = parseFloat(inputVal);
+    if (!isNaN(newSpeed) && newSpeed > 0) video.playbackRate = newSpeed;
+    else updateSpeedDisplay();
+  }
+});
+updateSpeedDisplay();
+
+/* ----------------- Fullscreen Handling ----------------- */
+
+/* helper: check if element is fullscreen (cross-browser) */
+function isFullscreenElement(el) {
+  return (
+    document.fullscreenElement === el ||
+    document.webkitFullscreenElement === el ||
+    document.mozFullScreenElement === el ||
+    document.msFullscreenElement === el
+  );
 }
 
-// 🔹 Listen for ANY speed change (from buttons OR default controls)
-video.addEventListener("ratechange", updateSpeedDisplay);
+/* toggle fullscreen on our container (user gesture) */
+fullscreenBtn.addEventListener("click", () => {
+  // If nothing is fullscreen, request container fullscreen
+  if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
+    if (playerContainer.requestFullscreen) playerContainer.requestFullscreen();
+    else if (playerContainer.webkitRequestFullscreen) playerContainer.webkitRequestFullscreen();
+    else if (playerContainer.msRequestFullscreen) playerContainer.msRequestFullscreen();
+  } else {
+    // exit fullscreen
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    else if (document.msExitFullscreen) document.msExitFullscreen();
+  }
+});
 
-// Initialize display
-updateSpeedDisplay();
+/* when fullscreen target changes, update UI and try to migrate
+   fullscreen from video -> container so custom controls are visible */
+function onFullScreenChange() {
+  // add/remove class for styling
+  if (isFullscreenElement(playerContainer)) {
+    playerContainer.classList.add("fullscreen-active");
+    fullscreenBtn.textContent = "⛶ Exit Fullscreen";
+  } else {
+    playerContainer.classList.remove("fullscreen-active");
+    fullscreenBtn.textContent = "⛶ Fullscreen";
+  }
+
+  // If video was made fullscreen (native button), try to switch to container
+  const videoIsFs =
+    document.fullscreenElement === video ||
+    document.webkitFullscreenElement === video ||
+    document.mozFullScreenElement === video ||
+    document.msFullscreenElement === video;
+
+  const containerIsFs = isFullscreenElement(playerContainer);
+
+  if (videoIsFs && !containerIsFs && !isSwitchingFullscreen) {
+    // attempt to migrate fullscreen to the container
+    isSwitchingFullscreen = true;
+
+    // Exit current fullscreen (the video) first, then request container fullscreen.
+    // Use a tiny delay to help browsers that require a gesture or sequence.
+    const doExit = document.exitFullscreen
+      ? document.exitFullscreen()
+      : document.webkitExitFullscreen
+      ? Promise.resolve(document.webkitExitFullscreen())
+      : Promise.resolve();
+
+    Promise.resolve(doExit)
+      .catch(() => {
+        // ignore errors
+      })
+      .finally(() => {
+        setTimeout(() => {
+          // try to request fullscreen on container
+          try {
+            if (playerContainer.requestFullscreen) playerContainer.requestFullscreen();
+            else if (playerContainer.webkitRequestFullscreen) playerContainer.webkitRequestFullscreen();
+            else if (playerContainer.msRequestFullscreen) playerContainer.msRequestFullscreen();
+          } catch (err) {
+            // some browsers block programmatic requests without a direct user gesture
+            console.warn("Could not migrate fullscreen to container:", err);
+          } finally {
+            // release guard after short delay
+            setTimeout(() => (isSwitchingFullscreen = false), 350);
+          }
+        }, 60);
+      });
+  }
+}
+
+/* cross-browser fullscreenchange */
+document.addEventListener("fullscreenchange", onFullScreenChange);
+document.addEventListener("webkitfullscreenchange", onFullScreenChange);
+document.addEventListener("mozfullscreenchange", onFullScreenChange);
+document.addEventListener("MSFullscreenChange", onFullScreenChange);

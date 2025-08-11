@@ -1,82 +1,116 @@
+/* base */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    text-align: center;
-    margin: 0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
 }
 
-h1 {
-    color: #333;
-    margin-bottom: 20px;
-}
+h1 { color: #333; margin-bottom: 20px; }
 
-/* Drop Zone Styling */
 #dropZone {
-    border: 3px dashed #888;
-    border-radius: 10px;
-    padding: 30px;
-    width: 80%;
-    margin: auto;
-    background-color: white;
-    color: #555;
-    cursor: pointer;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+  border: 3px dashed #888;
+  border-radius: 10px;
+  padding: 30px;
+  width: 80%;
+  margin: auto;
+  background-color: white;
+  color: #555;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-#dropZone.dragover {
-    border-color: #3498db;
-    background-color: #eaf4fc;
+#dropZone.dragover { border-color: #3498db; background-color: #eaf4fc; }
+#dropZone p { font-size: 18px; }
+#browseText { color: #3498db; font-weight: bold; cursor: pointer; }
+#fileInput { display: none; }
+
+/* Player container, video and controls */
+#playerContainer {
+  display: inline-block;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+  position: relative; /* for absolute controls in fullscreen */
+  max-width: 60%;
 }
 
-#dropZone p {
-    font-size: 18px;
-}
-
-#browseText {
-    color: #3498db;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Hide native file input */
-#fileInput {
-    display: none;
-}
-
-/* Video Styling */
+/* default video style */
 video {
-    display: block;
-    margin: 20px auto;
-    background-color: #000;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  display: block;
+  width: 100%;
+  height: auto;
+  background-color: #000;
 }
 
-/* Control Buttons */
+/* controls area */
 .controls {
-    margin-top: 15px;
+  background: #1c1c1c;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
+/* button styles */
 button {
-    background-color: #3498db;
-    border: none;
-    padding: 10px 14px;
-    color: white;
-    font-size: 16px;
-    margin: 5px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  background-color: #3498db;
+  border: none;
+  padding: 8px 14px;
+  color: white;
+  font-size: 16px;
+  margin: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+button:hover { background-color: #217dbb; }
 
-button:hover {
-    background-color: #217dbb;
-}
-
+/* speed input */
 #speedDisplay {
-    font-weight: bold;
-    font-size: 16px;
-    margin: 0 10px;
+  width: 60px;
+  font-size: 16px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px;
+  margin: 0 5px;
 }
 
+/* ---------- Fullscreen styling ---------- */
+/* Applied while our container is the fullscreen element */
+#playerContainer.fullscreen-active {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  background: #000;
+  display: block;
+}
+
+/* make the video occupy full container (leaving space for controls) */
+#playerContainer.fullscreen-active video {
+  width: 100%;
+  height: calc(100vh - 70px); /* leave ~70px for controls */
+  object-fit: contain; /* or 'cover' depending on preference */
+  display: block;
+}
+
+/* Overlay controls in fullscreen: fixed to bottom, translucent bg */
+#playerContainer.fullscreen-active .controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  margin: 0 auto;
+  width: calc(100% - 40px);
+  background: rgba(28, 28, 28, 0.45);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  padding: 12px;
+  border-radius: 8px;
+  max-width: 1100px;
+  box-sizing: border-box;
+}

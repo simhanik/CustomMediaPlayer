@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Video Player</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Custom Video Player</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <h1>🎥 Custom Video Player</h1>
 
-<div id="controls">
-</div>
+  <!-- Drag & Drop + File Upload -->
+  <div id="dropZone">
+    <p>Drag & Drop your video here or <span id="browseText">browse</span></p>
+    <input type="file" id="fileInput" accept="video/*" />
+  </div>
 
-    <h1>🎥 Custom Video Player</h1>
-
-    <!-- Drag & Drop + File Upload -->
-    <div id="dropZone">
-        <p>Drag & Drop your video here or <span id="browseText">Browse File</span></p>
-        <input type="file" id="fileInput" accept="video/*">
-    </div>
-
-    <!-- Video Player -->
-    <video id="myVideo" controls height="400">
-        <source id="videoSource" type="video/mp4">
+  <!-- Video + Controls in one container -->
+  <div id="playerContainer">
+    <video id="myVideo" controls>
+      <source id="videoSource" type="video/mp4" />
+      Your browser doesn't support HTML5 video.
     </video>
 
-    <!-- Controls -->
     <div class="controls">
-        <button onclick="rewind10()">⏪ Rewind 10s</button>
-        <button onclick="forward10()">⏩ Forward 10s</button>
+      <button onclick="rewind10()">⏪ Rewind 10s</button>
+      <button onclick="forward10()">⏩ Forward 10s</button>
 
-        <button onclick="decreaseSpeed()">➖ Speed</button>
-        <span id="speedDisplay">1.00x</span>
-        <button onclick="increaseSpeed()">➕ Speed</button>
+      <button onclick="decreaseSpeed()">➖ Speed</button>
+      <input type="text" id="speedDisplay" value="1.00x" />
+      <button onclick="increaseSpeed()">➕ Speed</button>
+
+      <button id="fullscreenBtn">⛶ Fullscreen</button>
     </div>
+  </div>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
