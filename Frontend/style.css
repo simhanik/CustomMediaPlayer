@@ -13,7 +13,7 @@ h1 { color: #333; margin-bottom: 20px; }
   border: 3px dashed #888;
   border-radius: 10px;
   padding: 30px;
-  width: 80%;
+  width: 45%;
   margin: auto;
   background-color: white;
   color: #555;
@@ -57,24 +57,24 @@ video {
 
 /* button styles */
 button {
-  background-color: #3498db;
+  background-color: #f8f8f8;
   border: none;
   padding: 8px 14px;
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 16px;
   margin: 5px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-button:hover { background-color: #217dbb; }
+button:hover { background-color: #a2e1f5; }
 
 /* speed input */
 #speedDisplay {
   width: 60px;
   font-size: 16px;
   text-align: center;
-  border: 1px solid #ccc;
+  border: 1px solid #fcf941;
   border-radius: 6px;
   padding: 5px;
   margin: 0 5px;
