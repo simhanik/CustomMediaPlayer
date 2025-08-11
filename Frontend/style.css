@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Drop Zone Styling */
+#dropZone {
+    border: 3px dashed #888;
+    border-radius: 10px;
+    padding: 30px;
+    width: 80%;
+    margin: auto;
+    background-color: white;
+    color: #555;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#dropZone.dragover {
+    border-color: #3498db;
+    background-color: #eaf4fc;
+}
+
+#dropZone p {
+    font-size: 18px;
+}
+
+#browseText {
+    color: #3498db;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Hide native file input */
+#fileInput {
+    display: none;
+}
+
+/* Video Styling */
+video {
+    display: block;
+    margin: 20px auto;
+    background-color: #000;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Control Buttons */
+.controls {
+    margin-top: 15px;
+}
+
+button {
+    background-color: #3498db;
+    border: none;
+    padding: 10px 14px;
+    color: white;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #217dbb;
+}
+
+#speedDisplay {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 10px;
+}
+
