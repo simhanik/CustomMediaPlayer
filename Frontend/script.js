@@ -58,18 +58,20 @@ function rewind10() {
 
 function increaseSpeed() {
     video.playbackRate = parseFloat((video.playbackRate + 0.05).toFixed(2));
-    updateSpeedDisplay();
 }
 
 function decreaseSpeed() {
     video.playbackRate = parseFloat((video.playbackRate - 0.05).toFixed(2));
     if (video.playbackRate < 0.1) video.playbackRate = 0.1;
-    updateSpeedDisplay();
 }
 
+// Show current speed
 function updateSpeedDisplay() {
     speedDisplay.textContent = video.playbackRate.toFixed(2) + "x";
 }
+
+// 🔹 Listen for ANY speed change (from buttons OR default controls)
+video.addEventListener("ratechange", updateSpeedDisplay);
 
 // Initialize display
 updateSpeedDisplay();
