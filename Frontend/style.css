@@ -1,13 +1,18 @@
 /* base */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f2f5;
+  background: radial-gradient(125% 125% at 50% 90%, #fff 40%, #7c3aed 100%);  
+  /* background-color: #f0f2f5; */
   text-align: center;
   margin: 0;
   padding: 20px;
 }
 
-h1 { color: #333; margin-bottom: 20px; }
+h1 { 
+    color: #333; 
+    /* margin-bottom: 20px; */
+    font-size: x-large;
+ }
 
 #dropZone {
   border: 3px dashed #888;
