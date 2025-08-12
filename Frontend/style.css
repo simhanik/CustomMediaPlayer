@@ -1,24 +1,22 @@
 /* base */
 body {
   font-family: Arial, sans-serif;
-  background: radial-gradient(125% 125% at 50% 90%, #fff 40%, #7c3aed 100%);  
-  /* background-color: #f0f2f5; */
+  background: radial-gradient(125% 125% at 50% 90%, #fff 40%, #7c3aed 100%);
   text-align: center;
   margin: 0;
   padding: 20px;
 }
 
-h1 { 
-    color: #333; 
-    /* margin-bottom: 20px; */
-    font-size: x-large;
- }
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
 
 #dropZone {
   border: 3px dashed #888;
   border-radius: 10px;
   padding: 30px;
-  width: 45%;
+  width: 50%;
   margin: auto;
   background-color: white;
   color: #555;
@@ -26,20 +24,30 @@ h1 {
   transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-#dropZone.dragover { border-color: #3498db; background-color: #eaf4fc; }
-#dropZone p { font-size: 18px; }
-#browseText { color: #3498db; font-weight: bold; cursor: pointer; }
-#fileInput { display: none; }
+#dropZone.dragover {
+  border-color: #3498db;
+  background-color: #eaf4fc;
+}
+#dropZone p {
+  font-size: 18px;
+}
+#browseText {
+  color: #3498db;
+  font-weight: bold;
+  cursor: pointer;
+}
+#fileInput {
+  display: none;
+}
 
 /* Player container, video and controls */
 #playerContainer {
   display: inline-block;
-  background: #000;
   border-radius: 10px;
   overflow: hidden;
   margin-top: 20px;
   position: relative; /* for absolute controls in fullscreen */
-  max-width: 60%;
+  max-width: 55%;
 }
 
 /* default video style */
@@ -52,7 +60,7 @@ video {
 
 /* controls area */
 .controls {
-  background: #1c1c1c;
+  /* background: #1c1c1c; */
   padding: 10px;
   display: flex;
   justify-content: center;
@@ -62,8 +70,9 @@ video {
 
 /* button styles */
 button {
-  background-color: #f8f8f8;
-  border: none;
+  background-color: #ffffff;
+  border: 1% solid #000;
+  border-width: 2px;
   padding: 8px 14px;
   color: rgb(0, 0, 0);
   font-size: 16px;
@@ -72,7 +81,9 @@ button {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-button:hover { background-color: #a2e1f5; }
+button:hover {
+  background-color: #a2e1f5;
+}
 
 /* speed input */
 #speedDisplay {
@@ -85,8 +96,7 @@ button:hover { background-color: #a2e1f5; }
   margin: 0 5px;
 }
 
-/* ---------- Fullscreen styling ---------- */
-/* Applied while our container is the fullscreen element */
+/* ---------- Fullscreen styling (MODIFIED SECTION) ---------- */
 #playerContainer.fullscreen-active {
   width: 100vw;
   height: 100vh;
@@ -95,15 +105,13 @@ button:hover { background-color: #a2e1f5; }
   display: block;
 }
 
-/* make the video occupy full container (leaving space for controls) */
 #playerContainer.fullscreen-active video {
   width: 100%;
-  height: calc(100vh - 70px); /* leave ~70px for controls */
-  object-fit: contain; /* or 'cover' depending on preference */
+  height: 100%;
+  object-fit: contain;
   display: block;
 }
 
-/* Overlay controls in fullscreen: fixed to bottom, translucent bg */
 #playerContainer.fullscreen-active .controls {
   position: absolute;
   left: 0;
@@ -111,11 +119,37 @@ button:hover { background-color: #a2e1f5; }
   bottom: 12px;
   margin: 0 auto;
   width: calc(100% - 40px);
-  background: rgba(28, 28, 28, 0.45);
-  backdrop-filter: blur(4px);
   justify-content: center;
-  padding: 12px;
+  padding: 8px;
   border-radius: 8px;
   max-width: 1100px;
   box-sizing: border-box;
+  /* --- MODIFICATION: Make controls invisible by default --- */
+  opacity: 0;
+  pointer-events: none; /* Prevent clicking on invisible controls */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* --- MODIFICATION: Show controls when player is hovered --- */
+#playerContainer.fullscreen-active:hover .controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- NEW: Class for JS to hide controls --- */
+#playerContainer.fullscreen-active .controls.hidden {
+  opacity: 0;
+}
+
+#playerContainer.fullscreen-active button {
+  font-size: 14px;
+  padding: 6px 10px;
+  margin: 0 4px;
+}
+
+#playerContainer.fullscreen-active #speedDisplay {
+  font-size: 14px;
+  padding: 4px;
+  width: 50px;
+  margin: 0 4px;
 }

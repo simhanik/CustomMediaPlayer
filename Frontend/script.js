@@ -38,10 +38,14 @@ function loadVideoFile(file) {
 }
 
 /* ----------------- Basic Controls ----------------- */
-function forward10() { video.currentTime += 10; }
+function forward10() {
+  video.currentTime += 10;
+  showControlsAndResetTimer();
+}
 function rewind10() {
   video.currentTime -= 10;
   if (video.currentTime < 0) video.currentTime = 0;
+  showControlsAndResetTimer();
 }
 function increaseSpeed() {
   video.playbackRate = parseFloat((video.playbackRate + 0.05).toFixed(2));
@@ -79,10 +83,16 @@ function isFullscreenElement(el) {
 /* toggle fullscreen on our container (user gesture) */
 fullscreenBtn.addEventListener("click", () => {
   // If nothing is fullscreen, request container fullscreen
-  if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
+  if (
+    !document.fullscreenElement &&
+    !document.webkitFullscreenElement &&
+    !document.mozFullScreenElement
+  ) {
     if (playerContainer.requestFullscreen) playerContainer.requestFullscreen();
-    else if (playerContainer.webkitRequestFullscreen) playerContainer.webkitRequestFullscreen();
-    else if (playerContainer.msRequestFullscreen) playerContainer.msRequestFullscreen();
+    else if (playerContainer.webkitRequestFullscreen)
+      playerContainer.webkitRequestFullscreen();
+    else if (playerContainer.msRequestFullscreen)
+      playerContainer.msRequestFullscreen();
   } else {
     // exit fullscreen
     if (document.exitFullscreen) document.exitFullscreen();
@@ -132,9 +142,12 @@ function onFullScreenChange() {
         setTimeout(() => {
           // try to request fullscreen on container
           try {
-            if (playerContainer.requestFullscreen) playerContainer.requestFullscreen();
-            else if (playerContainer.webkitRequestFullscreen) playerContainer.webkitRequestFullscreen();
-            else if (playerContainer.msRequestFullscreen) playerContainer.msRequestFullscreen();
+            if (playerContainer.requestFullscreen)
+              playerContainer.requestFullscreen();
+            else if (playerContainer.webkitRequestFullscreen)
+              playerContainer.webkitRequestFullscreen();
+            else if (playerContainer.msRequestFullscreen)
+              playerContainer.msRequestFullscreen();
           } catch (err) {
             // some browsers block programmatic requests without a direct user gesture
             console.warn("Could not migrate fullscreen to container:", err);
@@ -152,3 +165,45 @@ document.addEventListener("fullscreenchange", onFullScreenChange);
 document.addEventListener("webkitfullscreenchange", onFullScreenChange);
 document.addEventListener("mozfullscreenchange", onFullScreenChange);
 document.addEventListener("MSFullscreenChange", onFullScreenChange);
+
+/* ------------------------------------------------------------------ */
+/* --- NEW: Auto-Hide Controls on Inactivity --- */
+/* ------------------------------------------------------------------ */
+
+const controls = document.querySelector(".controls");
+let inactivityTimer;
+
+// Function to hide the controls
+function hideControls() {
+  // Only hide if we are in fullscreen mode
+  if (playerContainer.classList.contains("fullscreen-active")) {
+    controls.classList.add("hidden");
+  }
+}
+
+// Function to show controls and reset the hide timer
+function showControlsAndResetTimer() {
+  // First, remove the .hidden class to make sure controls are visible
+  controls.classList.remove("hidden");
+
+  // Clear any existing timer
+  clearTimeout(inactivityTimer);
+
+  // Start a new timer. If the mouse doesn't move for 3 seconds, hide the controls.
+  inactivityTimer = setTimeout(hideControls, 8000);
+}
+
+// Listen for mouse movement on the whole player
+playerContainer.addEventListener("mousemove", showControlsAndResetTimer);
+
+// Also, when the fullscreen status changes, reset the timer
+document.addEventListener("fullscreenchange", () => {
+  if (isFullscreenElement(playerContainer)) {
+    showControlsAndResetTimer();
+  }
+});
+document.addEventListener("webkitfullscreenchange", () => {
+  if (isFullscreenElement(playerContainer)) {
+    showControlsAndResetTimer();
+  }
+});
