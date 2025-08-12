@@ -47,6 +47,15 @@ function rewind10() {
   if (video.currentTime < 0) video.currentTime = 0;
   showControlsAndResetTimer();
 }
+
+function togglePlayPause() {
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
+}
+
 function increaseSpeed() {
   video.playbackRate = parseFloat((video.playbackRate + 0.05).toFixed(2));
 }
@@ -66,6 +75,7 @@ speedDisplay.addEventListener("keydown", (e) => {
     else updateSpeedDisplay();
   }
 });
+
 updateSpeedDisplay();
 
 /* --- NEW: Keyboard Shortcuts (J & L keys) --- */
@@ -86,6 +96,12 @@ document.addEventListener("keydown", (e) => {
       break;
     case "j": // Rewind 10s
       rewind10();
+      break;
+    case "k": // Play/Pause
+      togglePlayPause();
+      break;
+    case "f": // Toggle Fullscreen
+      fullscreenBtn.click(); // Triggers the existing fullscreen logic
       break;
   }
 });
