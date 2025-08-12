@@ -68,6 +68,28 @@ speedDisplay.addEventListener("keydown", (e) => {
 });
 updateSpeedDisplay();
 
+/* --- NEW: Keyboard Shortcuts (J & L keys) --- */
+
+document.addEventListener("keydown", (e) => {
+  // Get the tag name of the currently focused element
+  const activeTagName = document.activeElement.tagName.toLowerCase();
+
+  // Don't trigger shortcuts if user is typing in an input or textarea
+  if (activeTagName === "input" || activeTagName === "textarea") {
+    return;
+  }
+  
+  // Use a switch statement for different keys
+  switch (e.key.toLowerCase()) {
+    case "l": // Fast-forward 10s
+      forward10();
+      break;
+    case "j": // Rewind 10s
+      rewind10();
+      break;
+  }
+});
+
 /* ----------------- Fullscreen Handling ----------------- */
 
 /* helper: check if element is fullscreen (cross-browser) */
