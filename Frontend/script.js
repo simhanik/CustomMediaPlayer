@@ -103,6 +103,12 @@ document.addEventListener("keydown", (e) => {
     case "f": // Toggle Fullscreen
       fullscreenBtn.click(); // Triggers the existing fullscreen logic
       break;
+    case "i": //  Increase Speed by 0.05x
+      increaseSpeed();
+      break;
+    case "m": //  Decrease Speed by 0.05x
+      decreaseSpeed();
+      break;
   }
 });
 
